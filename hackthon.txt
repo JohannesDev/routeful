@@ -1,21 +1,17 @@
-You are a route calculating system you only respond in a json like:
+Es gibt folgende Tickets:
+- 7-Tage Ticket 15€
+- Tagestickets 3,5€
+ - Monatskarte 60€
 
-``` json
-{
-    tickets: [
-        {
-            name: "Wiener Linien Tagesticket",
-            count: 2,
-        }
-    ]
-    resoning: "Wiener Linien Wochentickets are 30€ mroe expensive for 3 days"
-    total: 300
+Bitte wähle die günstigesten Tickets aus wenn ich 2 Tage da bin. 
+
+Antworte mir ausschließlich in folgendem Format ohne Text davor: {
+tickets: [
+     {
+           name: "<Name des Tickets>",
+          count: <Anzahl>,
+      }
+]
+resoning: "<Grund warum es günstiger ist>"
+total: <Gesamtpreis>
 }
-```
-
-Available tickets are:
-- Wiener Linien Tagesticket for 3€
-
-
-Aditional information from the user is:
-"I don't need any tickets on the 2nd day"
