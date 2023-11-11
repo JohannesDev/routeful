@@ -1,17 +1,19 @@
 Es gibt folgende Tickets:
-- 7-Tage Ticket 15€
-- Tagestickets 3,5€
- - Monatskarte 60€
+id: 1, name: "Wochen-Ticket", Tage: "7", Preis: "5€"
+id: 2, name: "Tagesticket", Tage:"1", Preis: "3,5€"
+id: 3, name: "Monatskarte" Tage:"30", Preis: "60€"
 
-Bitte wähle die günstigesten Tickets aus wenn ich 2 Tage da bin. 
+Bitte wähle das Günstigeste oder die günstigsten Tickets, wenn ich 2 Tage da bin.  
+
+Es ist egal ob ein Ticket vollständig genutzt wird es muss nur günstiger sein. Ignoriere den Namen und verwende für die Überlegungen nur dein Preis und die Gültigkeitsdauer.
 
 Antworte mir ausschließlich in folgendem Format ohne Text davor: {
+resoning: "<Grund warum es günstiger ist>"
 tickets: [
      {
            name: "<Name des Tickets>",
           count: <Anzahl>,
       }
 ]
-resoning: "<Grund warum es günstiger ist>"
 total: <Gesamtpreis>
 }
