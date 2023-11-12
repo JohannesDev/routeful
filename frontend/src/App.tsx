@@ -1,10 +1,39 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Dragable from "./Dragable";
+import { Direction } from "./routes";
+import { create } from "zustand";
+import { Place } from "./places";
+
+interface AppState {
+  errorMsg: string | null;
+  finalRoute: Direction | null;
+  suggestions: [Place] | null;
+  selected: [Place] | [];
+  calculateRoute: () => void;
+  searchPlace: (name: string) => void;
+}
+
+const useAppStore = create<AppState>((set) => ({
+  errorMsg: null,
+  finalRoute: null,
+  suggestions: null,
+  selected: [],
+  searchPlace: (name: string) => {},
+  calculateRoute: () => {},
+}));
+
+function ResultView() {
+  const state = useAppStore();
+  return (
+    <>
+      <h1>ResultView</h1>
+    </>
+  );
+}
 
 function App() {
+  const state = useAppStore();
   const [count, setCount] = useState(0);
 
   return (
@@ -30,22 +59,6 @@ function App() {
         </div>
 
         <Dragable></Dragable>
-
-        <div className="p-4 border border-gray-800 rounded-md text-center grid grid-cols-12 gap-y-4">
-          <img
-            className="w-10 col-span-1 row-span-3 my-auto"
-            src="./public/hamburger.svg"
-          ></img>
-          <span className="col-span-11">Kunsthistorisches Museum</span>
-          <input
-            type="range"
-            className="col-span-11 transparent h-1.5 w-full cursor-pointer appearance-none rounded-lg border-transparent bg-neutral-200"
-            id="customRange1"
-          />
-          <span className="text-left">0h</span>
-          <span className="col-span-9"></span>
-          <span className="text-right">12h</span>
-        </div>
 
         <div>
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded mt-4">

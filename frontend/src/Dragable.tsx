@@ -1,57 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useCallback } from "react";
 
-const ITEMS = [
-  { id: 0, label: "Item 1", order: 0 },
-  { id: 1, label: "Item 2", order: 1 },
-  { id: 2, label: "Item 3", order: 2 },
-  { id: 3, label: "Item 4", order: 3 },
-  { id: 4, label: "Item 5", order: 4 },
-];
+import List, { ItemDragging } from "devextreme-react/list";
 
 export default function Dragable() {
-  const draggingPos = useRef(null);
-  const dragOverPos = useRef(null);
-  const [items, setItems] = useState(ITEMS.sort((a, b) => a.order - b.order));
-
-  const handleDragStart = (position) => {
-    draggingPos.current = position;
-  };
-
-  const handleDragEnter = (position) => {
-    console.log("HELOO");
-    dragOverPos.current = position;
-    const newItems = [...items];
-    const draggingItem = newItems[draggingPos.current];
-    if (!draggingItem) return;
-
-    newItems.splice(draggingPos.current, 1);
-    newItems.splice(dragOverPos.current, 0, draggingItem);
-
-    const reorderedItems = newItems.map((item, index) => ({
-      ...item,
-      order: index,
-    }));
-
-    draggingPos.current = position;
-    dragOverPos.current = null;
-
-    setItems(reorderedItems);
-  };
-
   return (
-    <div>
-      {items.map((item, index) => (
-        <div
-          key={item.id}
-          className="item"
-          draggable
-          onDragStart={() => handleDragStart(index)}
-          onDragEnter={() => handleDragEnter(index)}
-          onDragOver={(e) => e.preventDefault()}
-        >
-          {item.label}
-        </div>
-      ))}
+    <div className="p-4 border border-gray-800 rounded-md text-center grid grid-cols-12 gap-y-4">
+      <img
+        className="w-10 col-span-1 row-span-3 my-auto"
+        src="./public/hamburger.svg"
+      ></img>
+      <span className="col-span-11">Kunsthistorisches Museum</span>
+      <input
+        type="range"
+        className="col-span-11 transparent h-1.5 w-full cursor-pointer appearance-none rounded-lg border-transparent bg-neutral-200"
+        id="customRange1"
+      />
+      <span className="text-left">0h</span>
+      <span className="col-span-9"></span>
+      <span className="text-right">12h</span>
     </div>
   );
 }
