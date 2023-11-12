@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from "react";
 
-import List, { ItemDragging } from "devextreme-react/list";
+import useAppStore from "./App";
 
 export default function Dragable() {
-  return (
+  const listItems = [1, 2, 3].map((item) => (
     <div className="p-4 border border-gray-800 rounded-md text-center grid grid-cols-12 gap-y-4">
       <img
         className="w-10 col-span-1 row-span-3 my-auto"
@@ -19,5 +19,7 @@ export default function Dragable() {
       <span className="col-span-9"></span>
       <span className="text-right">12h</span>
     </div>
-  );
+  ));
+
+  return <div>{listItems}</div>;
 }

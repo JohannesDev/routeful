@@ -18,7 +18,7 @@ const useAppStore = create<AppState>((set) => ({
   errorMsg: null,
   finalRoute: null,
   suggestions: null,
-  selected: [],
+  selected: [{ place_id: "name", name: "abc", duration_h: 4 }],
   searchPlace: (name: string) => {},
   calculateRoute: () => {},
 }));
@@ -70,4 +70,4 @@ function App() {
   );
 }
 
-export default App;
+export default { App, useAppStore };
