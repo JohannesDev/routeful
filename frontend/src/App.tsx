@@ -1,10 +1,37 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Dragable from "./Dragable";
+import { Direction } from "./routes";
+import { create } from "zustand";
+import { Place } from "./places";
+
+interface AppState {
+  errorMsg: string | null;
+  finalRoute: Direction | null;
+  suggestions: [Place] | null;
+  calculateRoute: () => void;
+  searchPlace: (name: string) => void;
+}
+
+const useAppStore = create<AppState>((set) => ({
+  errorMsg: null,
+  finalRoute: null,
+  suggestions: null,
+  searchPlace: (name: string) => {},
+  calculateRoute: () => {},
+}));
+
+function ResultView() {
+  const state = useAppStore();
+  return (
+    <>
+      <h1>ResultView</h1>
+    </>
+  );
+}
 
 function App() {
+  const state = useAppStore();
   const [count, setCount] = useState(0);
 
   return (
