@@ -23,3 +23,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 flask --app main run --debug
 ```
+
+## Contributing
+
+Contributions to Routeful are welcome! If you have suggestions or improvements, feel free to fork the repository and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. Please see the LICENSE file for more details.
