@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from datetime import datetime, timedelta
 import requests, json
 
 app = Flask(__name__)
+CORS(app)
 api_key = open("APIKEY.txt").read()
 
 
@@ -106,11 +108,16 @@ def get_combined_response():
         for part in response_parts:
             if part:
                 json_part = json.loads(part)
-                combined_response += json_part.get("response", "")
+                combined_response += json_part.get("response", "").replace("\n", "")
                 if json_part.get("done"):
                     break
 
-        return jsonify({"combined_response": combined_response})
+        # Parsen des kombinierten Strings als JSON-Objekt
+        try:
+            parsed_response = json.loads(combined_response)
+            return jsonify(parsed_response)
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON format in combined response"}), 500
     else:
         return (
             jsonify({"error": "Error in requesting the external API"}),
