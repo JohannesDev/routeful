@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from datetime import datetime, timedelta
-import requests
+import requests, json
 
 app = Flask(__name__)
 api_key = open("APIKEY.txt").read()
@@ -87,3 +87,32 @@ def calc_route():
             )
 
     return jsonify({"routes": routes})
+
+
+@app.route("/get_llm_response", methods=["POST"])
+def get_combined_response():
+    data = request.json
+    model = data.get("model")
+    prompt = data.get("prompt")
+
+    api_url = "http://localhost:11434/api/generate"
+    api_data = {"model": model, "prompt": prompt}
+    response = requests.post(api_url, json=api_data)
+
+    if response.status_code == 200:
+        response_parts = response.text.split("\n")
+
+        combined_response = ""
+        for part in response_parts:
+            if part:
+                json_part = json.loads(part)
+                combined_response += json_part.get("response", "")
+                if json_part.get("done"):
+                    break
+
+        return jsonify({"combined_response": combined_response})
+    else:
+        return (
+            jsonify({"error": "Error in requesting the external API"}),
+            response.status_code,
+        )
