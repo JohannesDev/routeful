@@ -28,6 +28,7 @@ def search():
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={location}&radius=12000&keyword={query}&key={api_key}"
 
     res = requests.get(url)
+    res.headers.add("Access-Control-Allow-Origin", "*")
     return res.json()
 
 
@@ -87,8 +88,9 @@ def calc_route():
                 jsonify({"error": f"Cannot find route from {start} to {end}"}),
                 400,
             )
-
-    return jsonify({"routes": routes})
+    res = jsonify({"routes": routes})
+    res.headers.add("Access-Control-Allow-Origin", "*")
+    return res
 
 
 @app.route("/get_llm_response", methods=["POST"])
@@ -100,6 +102,7 @@ def get_combined_response():
     api_url = "http://localhost:11434/api/generate"
     api_data = {"model": model, "prompt": prompt}
     response = requests.post(api_url, json=api_data)
+    response.headers.add("Access-Control-Allow-Origin", "*")
 
     if response.status_code == 200:
         response_parts = response.text.split("\n")
