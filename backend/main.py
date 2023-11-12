@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
 import requests
 
 app = Flask(__name__)
@@ -20,31 +21,56 @@ def search():
     return res.json()
 
 
-# You get a list of names of destinations and you just request them all and
-# merge them into one. It doesn't matter if the response is huge we can render
-# that in the frontend.
 @app.post("/calculate")
 def calc_route():
     destinations = request.json.get("destinations", [])
+    stay_durations = request.json.get("stay_durations", [])  # Verweildauern in Stunden
+    start_time_str = request.json.get("start_time", None)  # Startzeitpunkt als String
 
-    if len(destinations) < 2:
-        return jsonify({"error": "Mindestens zwei Ziele erforderlich"}), 400
+    # Startzeitpunkt in ein datetime-Objekt umwandeln
+    try:
+        start_time = datetime.fromisoformat(start_time_str)
+    except ValueError:
+        return (
+            jsonify(
+                {"error": "Ungültiges Startzeit-Format. Bitte im ISO-Format angeben."}
+            ),
+            400,
+        )
+
+    if len(destinations) < 2 or len(destinations) != len(stay_durations):
+        return jsonify({"error": "Ungültige Anzahl an Zielen oder Verweildauern"}), 400
 
     routes = []
+    current_time = start_time  # Aktuelle Zeit aktualisieren
 
-    # Iterieren durch jedes Ziel, außer das letzte
     for i in range(len(destinations) - 1):
         start = destinations[i]
         end = destinations[i + 1]
 
-        url = f"https://maps.googleapis.com/maps/api/directions/json?origin={start}&destination={end}&mode=transit&key={api_key}"
+        # Google Maps API-Aufruf
+        url = f"https://maps.googleapis.com/maps/api/directions/json?origin={start}&destination={end}&mode=transit&departure_time={int(current_time.timestamp())}&key={api_key}"
         response = requests.get(url)
         result = response.json()
 
         if result["status"] == "OK":
-            routes.append(
-                result["routes"][0]
-            )  # Nehmen Sie die erste Route (können auch Alternativen sein)
+            # Route und Reisezeit
+            route_info = result["routes"][0]
+            travel_time = route_info["legs"][0]["duration"][
+                "value"
+            ]  # Reisezeit in Sekunden
+
+            # Ankunftszeit am Ziel berechnen
+            arrival_time = current_time + timedelta(seconds=travel_time)
+            route_info["arrival_time"] = arrival_time.isoformat()
+
+            # Verweildauer am aktuellen Ziel in Sekunden umrechnen
+            stay_duration_seconds = stay_durations[i] * 3600
+
+            # Aktualisieren der aktuellen Zeit für den nächsten Startpunkt
+            current_time = arrival_time + timedelta(seconds=stay_duration_seconds)
+
+            routes.append(route_info)
         else:
             return (
                 jsonify({"error": f"Kann Route von {start} nach {end} nicht finden"}),
